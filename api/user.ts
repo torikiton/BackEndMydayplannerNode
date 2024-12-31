@@ -2,6 +2,7 @@ import express from "express";
 import { conn,queryAsync } from "../dbconnect";
 import mysql from "mysql";
 import bcrypt from 'bcrypt';
+import { Convert } from "../model/usermodel";  // เพิ่มการ import class Convert
 
 export const router = express.Router();
 
@@ -59,7 +60,7 @@ router.post('/signin-user', (req, res) => {
 
 
 router.post('/get_user', (req, res) => {
-    const { email } = req.body; // รับค่า email จาก body
+    const { email } = req.body;  // รับ email จาก body ของ request
 
     // ตรวจสอบว่าได้ส่ง email มาใน request หรือไม่
     if (!email) {
@@ -80,8 +81,13 @@ router.post('/get_user', (req, res) => {
             return;
         }
 
-        // ส่งข้อมูลกลับในกรณีที่พบผู้ใช้
-        res.status(200).json(result);
+        // แปลงข้อมูล JSON ที่ได้จากฐานข้อมูลให้เป็น Usermodel
+        try {
+            const usermodel = Convert.toUsermodel(JSON.stringify(result));  // แปลงเป็น array ของ Usermodel
+            res.status(200).json(usermodel[0]);  // ส่งข้อมูลกลับไปยัง client
+        } catch (error) {
+            res.status(500).json({ success: false, message: 'Error parsing user data.' });
+        }
     });
 });
 
