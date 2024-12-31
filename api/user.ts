@@ -59,8 +59,7 @@ router.post('/signin-user', (req, res) => {
 
 
 router.post('/get_user', (req, res) => {
-    // รับ email จาก query parameters
-    const { email } = req.query;
+    const { email } = req.body; // รับค่า email จาก body
 
     // ตรวจสอบว่าได้ส่ง email มาใน request หรือไม่
     if (!email) {
@@ -85,5 +84,6 @@ router.post('/get_user', (req, res) => {
         res.status(200).json(result);
     });
 });
+
 
 
