@@ -1,6 +1,6 @@
 # Ignore node_modules
 node_modules/
-
+serviceAccountKey
 # Ignore log files
 *.log
 
@@ -9,3 +9,4 @@ node_modules/
 
 # Ignore build output
 /dist
+"serviceAccountKey.json" 
