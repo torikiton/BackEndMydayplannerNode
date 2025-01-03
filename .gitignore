@@ -10,3 +10,4 @@ serviceAccountKey
 # Ignore build output
 /dist
 "serviceAccountKey.json" 
+serviceAccountKey.json
