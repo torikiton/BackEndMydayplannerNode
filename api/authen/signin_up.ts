@@ -6,39 +6,34 @@ import { Convert } from "../../model/usermodel";  // เพิ่มการ im
 import { db } from './../../firebase';
 import { addDoc, collection, deleteDoc, doc, getDoc, getDocs, setDoc, } from 'firebase/firestore'; // ฟังก์ชันที่จำเป็นจาก Firestore SDK
 
-const admin = require("firebase-admin");
-const credential = require("../../serviceAccountKey.json");
 
-admin.initializeApp({
-    credential: admin.credential.cert(credential)
-});
 
 
 export const router = express.Router();
 
-router.post('/api/login_google', async (req, res) => {
-    const { tokenID } = req.body;
+// router.post('/api/login_google', async (req, res) => {
+//     const { tokenID } = req.body;
 
-    if (!tokenID) {
-        res.status(400).json({ error: 'tokenID is required.' });
-        return
-    }
+//     if (!tokenID) {
+//         res.status(400).json({ error: 'tokenID is required.' });
+//         return
+//     }
 
-    try {
-        // ตรวจสอบ tokenID โดยใช้ Firebase Admin SDK
+//     try {
+//         // ตรวจสอบ tokenID โดยใช้ Firebase Admin SDK
 
-        const decodedToken = await admin.auth().verifyIdToken(tokenID);
-        if (decodedToken.aud !== 'mydayplanner-e2f6b') {
-            throw new Error('Invalid audience');
-        }
-        // ถ้า token ถูกต้อง จะได้รับข้อมูลจาก decodedToken
-        const userId = decodedToken.uid;
-        res.status(200).json({ message: 'Token is valid', userId });
-    } catch (error) {
-        console.error("Error verifying token:", error);
-        res.status(401).json({ error: 'Invalid or expired tokenID' });
-    }
-});
+//         const decodedToken = await admin.auth().verifyIdToken(tokenID);
+//         if (decodedToken.aud !== 'mydayplanner-e2f6b') {
+//             throw new Error('Invalid audience');
+//         }
+//         // ถ้า token ถูกต้อง จะได้รับข้อมูลจาก decodedToken
+//         const userId = decodedToken.uid;
+//         res.status(200).json({ message: 'Token is valid', userId });
+//     } catch (error) {
+//         console.error("Error verifying token:", error);
+//         res.status(401).json({ error: 'Invalid or expired tokenID' });
+//     }
+// });
 
 
 router.post('/api/login', (req, res) => {
