@@ -3,6 +3,8 @@ import { getFirestore } from "firebase/firestore";
 import admin from "firebase-admin";
 import dotenv from "dotenv";
 
+dotenv.config(); // Load environment variables from .env file
+
 const firebaseConfig = {
   apiKey: "AIzaSyBYSAhstX5INt2xkwOlGmg3wAruQBEZ3AI",
   authDomain: "mydayplanner-e2f6b.firebaseapp.com",
@@ -21,7 +23,7 @@ if (admin.apps.length === 0) {
   const serviceAccount = require(process.env.SERVICE_ACCOUNT_KEY || '');
   admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
-    databaseURL: "https://mydayplanner-e2f6b.firebaseio.com" // Optional: Add your database URL here
+    // databaseURL: "https://mydayplanner-e2f6b.firebaseio.com" // Optional: Add your database URL here
   });
 }
 
