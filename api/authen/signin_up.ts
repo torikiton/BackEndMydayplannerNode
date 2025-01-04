@@ -6,40 +6,29 @@ import { Convert } from "../../model/usermodel";  // เพิ่มการ im
 import { db } from './../../firebase';
 import { addDoc, collection, deleteDoc, doc, getDoc, getDocs, setDoc, } from 'firebase/firestore'; // ฟังก์ชันที่จำเป็นจาก Firestore SDK
 import { promisify } from "util";
+import { admin } from '../../firebase';
 
 export const router = express.Router();
 
-// router.get('/getfirebase', async (req, res) => {
-//     try {
-//       // ชื่อ Collection ที่ต้องการดึงข้อมูล
-//       const collectionName = 'user'; // แทนที่ด้วยชื่อ Collection จริง
+router.post('/api/login_google', async (req, res) => {
+    const { tokenID } = req.body;
 
-//       // อ้างอิงถึง Collection ใน Firestore
-//       const collectionRef = collection(db, collectionName);
+    if (!tokenID) {
+        res.status(400).json({ error: 'tokenID is required.' });
+        return;
+    }
 
-//       // ดึงเอกสารทั้งหมดใน Collection
-//       const querySnapshot = await getDocs(collectionRef);
+    try {
+        const decodedToken = await admin.auth().verifyIdToken(tokenID); 
+        const email = decodedToken.email;
+        const userId = decodedToken.uid;
 
-//       // แปลงเอกสาร Firestore เป็น array
-//       const data = querySnapshot.docs.map(doc => ({
-//         id: doc.id, // ID ของเอกสาร
-//         ...doc.data() // ข้อมูลในเอกสาร
-//       }));
-
-//       // ส่งข้อมูลกลับไปยังผู้ใช้งาน
-//       res.status(200).json({
-//         success: true,
-//         data: data
-//       });
-//     } catch (error) {
-//       // จัดการข้อผิดพลาด
-//       console.error("Error fetching Firestore data:", error);
-//       res.status(500).json({
-//         success: false,
-//         message: "Error fetching data from Firestore",
-//       });
-//     }
-//   });
+        res.status(200).json({ message: 'Token verified successfully', email, userId });
+    } catch (error) {
+        console.error("Error verifying token:", error);
+        res.status(401).json({ error: 'Invalid or expired tokenID' });
+    }
+});
 
 router.post('/api/login', (req, res) => {
     const { email, password } = req.body;
