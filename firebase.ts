@@ -23,7 +23,6 @@ if (admin.apps.length === 0) {
   const serviceAccount = require(process.env.SERVICE_ACCOUNT_KEY || '');
   admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
-    // databaseURL: "https://mydayplanner-e2f6b.firebaseio.com" // Optional: Add your database URL here
   });
 }
 
