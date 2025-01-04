@@ -3,17 +3,18 @@ import admin from "firebase-admin";
 import dotenv from 'dotenv';
 
 dotenv.config();
-if (!process.env.SERVICE_ACCOUNT_KEY) {
-  console.error('SERVICE_ACCOUNT_KEY is not set in the environment variables.');
-  process.exit(1);
-}
 
-const serviceAccountKey = JSON.parse(process.env.SERVICE_ACCOUNT_KEY as string);
+// if (!process.env.SERVICE_ACCOUNT_KEY) {
+//   console.error('SERVICE_ACCOUNT_KEY is not set in the environment variables.');
+//   process.exit(1);
+// }
+
+// const serviceAccountKey = JSON.parse(process.env.SERVICE_ACCOUNT_KEY as string);
 
 
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccountKey),
-});
+// admin.initializeApp({
+//   credential: admin.credential.cert(serviceAccountKey),
+// });
 
 export const router = express.Router();
 
