@@ -3,9 +3,7 @@ import admin from "firebase-admin";
 import dotenv from 'dotenv';
 
 dotenv.config();
-const serviceAccountKey = process.env.SERVICE_ACCOUNT_KEY as string;
-
-
+const serviceAccountKey = JSON.parse(process.env.SERVICE_ACCOUNT_KEY as string);
 
 
 admin.initializeApp({
