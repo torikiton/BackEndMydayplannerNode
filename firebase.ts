@@ -2,6 +2,7 @@ import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 import admin from "firebase-admin";
 import dotenv from "dotenv";
+import path from "path";
 
 dotenv.config(); // Load environment variables from .env file
 
@@ -18,9 +19,11 @@ const firebaseConfig = {
 export const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
 
-// Initialize Firebase Admin SDK for server-side operations (verify token)
+const serviceAccountPath = path.join(__dirname, process.env.SERVICE_ACCOUNT_KEY || '');
+const serviceAccount = require(serviceAccountPath);
+
 if (admin.apps.length === 0) {
-  const serviceAccount = require(process.env.SERVICE_ACCOUNT_KEY || '');
+
   admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
   });
