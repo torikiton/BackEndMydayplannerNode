@@ -18,15 +18,3 @@ const firebaseConfig = {
 
 export const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
-
-const serviceAccountPath = path.join(__dirname, process.env.SERVICE_ACCOUNT_KEY || '');
-const serviceAccount = require(serviceAccountPath);
-
-if (admin.apps.length === 0) {
-
-  admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount),
-  });
-}
-
-export { admin };

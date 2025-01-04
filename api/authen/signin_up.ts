@@ -6,29 +6,10 @@ import { Convert } from "../../model/usermodel";  // เพิ่มการ im
 import { db } from './../../firebase';
 import { addDoc, collection, deleteDoc, doc, getDoc, getDocs, setDoc, } from 'firebase/firestore'; // ฟังก์ชันที่จำเป็นจาก Firestore SDK
 import { promisify } from "util";
-import { admin } from '../../firebase';
+
 
 export const router = express.Router();
 
-router.post('/api/login_google', async (req, res) => {
-    const { tokenID } = req.body;
-
-    if (!tokenID) {
-        res.status(400).json({ error: 'tokenID is required.' });
-        return;
-    }
-
-    try {
-        const decodedToken = await admin.auth().verifyIdToken(tokenID); 
-        const email = decodedToken.email;
-        const userId = decodedToken.uid;
-
-        res.status(200).json({ message: 'Token verified successfully', email, userId });
-    } catch (error) {
-        console.error("Error verifying token:", error);
-        res.status(401).json({ error: 'Invalid or expired tokenID' });
-    }
-});
 
 router.post('/api/login', (req, res) => {
     const { email, password } = req.body;
