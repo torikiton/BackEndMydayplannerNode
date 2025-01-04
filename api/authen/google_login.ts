@@ -1,12 +1,18 @@
 import express from "express";
 import admin from "firebase-admin";
+import dotenv from 'dotenv';
 
-export const router = express.Router();
+dotenv.config();
+const serviceAccountKey = process.env.SERVICE_ACCOUNT_KEY as string;
+
+
+
 
 admin.initializeApp({
-    credential: admin.credential.cert(require('../../serviceAccountKey.json'))
-  });
+  credential: admin.credential.cert(serviceAccountKey),
+});
 
+export const router = express.Router();
 
   router.post('/verify-token', async (req, res) => {
     const { token } = req.body;

@@ -4,7 +4,7 @@ import { router as user } from "./api/user";
 import { router as board } from "./api/board";
 import { router as otp } from "./api/authen/otp";
 import { router as signin_up } from "./api/authen/signin_up";
-import { router as googlelogin } from "./api/authen/google login";
+import { router as googlelogin } from "./api/authen/google_login";
 import bodyParser from "body-parser";
 
 export const app = express();
