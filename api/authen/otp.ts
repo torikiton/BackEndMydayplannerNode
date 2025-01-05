@@ -1,5 +1,9 @@
 import express from "express";
 import nodemailer from 'nodemailer';
+import { Convert, Usermodel } from "../../model/usermodel";
+import { conn, queryAsync } from "../../dbconnect";
+import mysql from "mysql";
+import { messaging } from "firebase-admin";
 
 export const router = express.Router();
 
@@ -187,3 +191,56 @@ function generateEmailContent(OTP: string, REF: string) {
                           </table>
                           `;
 }
+
+router.put('/api/is_verify', async (req, res) => {
+  const { email } = req.body;
+  let userData: Usermodel | undefined;
+
+  const response = await fetch('https://node-myday-planner.onrender.com/user/api/get_user', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ email: email })
+  });
+  
+  const dataResponse = await response.json();
+  userData = dataResponse as Usermodel;
+
+  if (!userData) {
+    res.status(404).json({ message: 'User not found' });
+    return 
+  }
+
+
+  const data: Usermodel = { ...userData, is_verify: 1 };
+  const createAt = new Date(data.create_at).toISOString().slice(0, 19).replace('T', ' ');
+
+  let sql = `
+    UPDATE \`user\`
+    SET
+      \`name\` = ?, \`email\` = ?, \`hashed_password\` = ?, \`profile\` = ?, 
+      \`role\` = ?, \`is_active\` = ?, \`is_verify\` = ?, \`create_at\` = ?
+    WHERE \`email\` = ?;
+  `;
+
+  sql = mysql.format(sql, [
+    data.name,
+    data.email,
+    data.hashed_password,
+    data.profile,
+    data.role,
+    data.is_active,
+    data.is_verify,
+    createAt,
+    email,
+  ]);
+
+  conn.query(sql, (err, result) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).json({ message: 'Database update failed' });
+    }
+    res.status(200).json({ message: 'Database update successfuly' });
+  });
+});
