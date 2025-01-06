@@ -14,8 +14,8 @@ const transporter = nodemailer.createTransport({
   port: 465,
   secure: true,
   auth: {
-    user: 'projectmuutoo@gmail.com',
-    pass: 'kuag wzhc bizy cfjp'
+    user: 'mydayplanner.noreply@gmail.com',
+    pass: 'reff xwiy rntr tiju'
   }
 })
 
@@ -27,7 +27,7 @@ router.post('/api/otp', async (req, res) => {
     const content = generateEmailContent(OTP, REF);
 
     const info = await transporter.sendMail({
-      from: '"MydayPlanner "<projectmuutoo@gmail.com>',
+      from: '"MydayPlanner "<mydayplanner.noreply@gmail.com>',
       to: recipient,
       subject: "MydayPlanner Login OTP code",
       html: content
