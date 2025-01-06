@@ -9,10 +9,10 @@ export const router = express.Router();
 
 
 router.post('/verify-token', async (req, res) => {
-  const { token } = req.body;
+  const { tokenID } = req.body;
 
   try {
-    const response = await fetch(`https://oauth2.googleapis.com/tokeninfo?id_token=${token}`);
+    const response = await fetch(`https://oauth2.googleapis.com/tokeninfo?id_token=${tokenID}`);
 
     if (!response.ok) {
       throw new Error('Invalid token');
@@ -31,6 +31,16 @@ router.post('/api/login_google', async (req, res) => {
   const { email, profile, name } = req.body;
 
   try {
+    const responseToken = await fetch('https://node-myday-planner.onrender.com/user/api/get_user', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email: email })
+    });
+    const dataToken = await responseToken.json();
+
+
     const response = await fetch('https://node-myday-planner.onrender.com/user/api/get_user', {
       method: 'POST',
       headers: {
