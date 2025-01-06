@@ -4,76 +4,78 @@ import { Convert, Usermodel } from "../../model/usermodel";
 import { conn, queryAsync } from "../../dbconnect";
 import mysql from "mysql";
 import { messaging } from "firebase-admin";
+import { db } from '../../firebase';
+import { addDoc, collection, doc, getDoc, getDocs, setDoc, updateDoc, } from 'firebase/firestore';
 
 export const router = express.Router();
 
 const transporter = nodemailer.createTransport({
-    host : "smtp.gmail.com",
-    port : 465,
-    secure : true,
-    auth: {
-        user: 'projectmuutoo@gmail.com',
-        pass: 'kuag wzhc bizy cfjp'
-    }
+  host: "smtp.gmail.com",
+  port: 465,
+  secure: true,
+  auth: {
+    user: 'projectmuutoo@gmail.com',
+    pass: 'kuag wzhc bizy cfjp'
+  }
 })
 
 router.post('/api/otp', async (req, res) => {
-    try {
-        const {recipient} = req.body;
-        const OTP = generateOTP();
-        const REF = generateREF();
-        const content = generateEmailContent(OTP, REF);
+  try {
+    const { recipient } = req.body;
+    const OTP = generateOTP();
+    const REF = generateREF();
+    const content = generateEmailContent(OTP, REF);
 
-        const info = await transporter.sendMail({
-            from: '"MydayPlanner "<projectmuutoo@gmail.com>',
-            to: recipient,
-            subject: "MydayPlanner Login OTP code",
-            html: content
-        });
+    const info = await transporter.sendMail({
+      from: '"MydayPlanner "<projectmuutoo@gmail.com>',
+      to: recipient,
+      subject: "MydayPlanner Login OTP code",
+      html: content
+    });
 
-        console.log("Email sent:", info.response);
-        res.json({ 
-            message: "Email sent successfully",
-            OTP: OTP,
-            REF: REF
-        });
-        
+    console.log("Email sent:", info.response);
+    res.json({
+      message: "Email sent successfully",
+      OTP: OTP,
+      REF: REF
+    });
 
-    } catch (error) {
-        console.error("Error sending email:",error);
-        res.status(500).json({error: 'Fail to send email'});
-    }
+
+  } catch (error) {
+    console.error("Error sending email:", error);
+    res.status(500).json({ error: 'Fail to send email' });
+  }
 })
 
 function generateOTP(length = 6) {
-    // ตรวจสอบว่า length มีค่าเหมาะสม
-    if (length <= 0) {
-        throw new Error("OTP length must be greater than 0");
-    }
-    
-    // สร้าง OTP โดยการสุ่มตัวเลข
-    let otp = '';
-    for (let i = 0; i < length; i++) {
-        otp += Math.floor(Math.random() * 10); // สุ่มเลข 0-9
-    }
-    return otp;
+  // ตรวจสอบว่า length มีค่าเหมาะสม
+  if (length <= 0) {
+    throw new Error("OTP length must be greater than 0");
+  }
+
+  // สร้าง OTP โดยการสุ่มตัวเลข
+  let otp = '';
+  for (let i = 0; i < length; i++) {
+    otp += Math.floor(Math.random() * 10); // สุ่มเลข 0-9
+  }
+  return otp;
 }
 function generateREF(length = 10) {
-    // กำหนดชุดตัวอักษรและตัวเลขที่ใช้ใน REF
-    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    let ref = '';
-    
-    // สุ่มตัวอักษรและตัวเลขตามความยาวที่กำหนด
-    for (let i = 0; i < length; i++) {
-        const randomIndex = Math.floor(Math.random() * characters.length);
-        ref += characters[randomIndex];
-    }
-    
-    return ref;
+  // กำหนดชุดตัวอักษรและตัวเลขที่ใช้ใน REF
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let ref = '';
+
+  // สุ่มตัวอักษรและตัวเลขตามความยาวที่กำหนด
+  for (let i = 0; i < length; i++) {
+    const randomIndex = Math.floor(Math.random() * characters.length);
+    ref += characters[randomIndex];
+  }
+
+  return ref;
 }
 
 function generateEmailContent(OTP: string, REF: string) {
-    return `
+  return `
         <table width="680px" cellpadding="0" cellspacing="0" border="0">
                             <tbody>
                               <tr>
@@ -137,7 +139,7 @@ function generateEmailContent(OTP: string, REF: string) {
                                       <td width="1" height="20" bgcolor="#ffffff" style="font-size:0"></td>
                                       <td width="5%" height="20" bgcolor="#ffffff" style="font-size:0"></td>
                                       <td width="*" height="20" bgcolor="#ffffff" align="center" valign="middle" style="font-size:18px;color:#c00;font-family:Arial">
-                                        <span class="il">OTP</span> : <strong style="color:#000">${ OTP }</strong></td>
+                                        <span class="il">OTP</span> : <strong style="color:#000">${OTP}</strong></td>
                                       <td width="5%" height="20" bgcolor="#ffffff" style="font-size:0"></td>
                                       <td width="1" height="20" bgcolor="#ffffff" style="font-size:0"></td>
                                       <td width="10%" height="20" bgcolor="#ffffff" style="font-size:0"></td>
@@ -147,7 +149,7 @@ function generateEmailContent(OTP: string, REF: string) {
                                       <td width="1" height="20" bgcolor="#ffffff" style="font-size:0"></td>
                                       <td width="5%" height="20" bgcolor="#ffffff" style="font-size:0"></td>
                                       <td width="*" height="20" bgcolor="#ffffff" align="center" valign="middle" style="font-size:18px;color:#c00;font-family:Arial">
-                                        <span class="il">Ref</span> : <strong style="color:#000">${ REF }</strong></td>
+                                        <span class="il">Ref</span> : <strong style="color:#000">${REF}</strong></td>
                                       <td width="5%" height="20" bgcolor="#ffffff" style="font-size:0"></td>
                                       <td width="1" height="20" bgcolor="#ffffff" style="font-size:0"></td>
                                       <td width="10%" height="20" bgcolor="#ffffff" style="font-size:0"></td>
@@ -203,13 +205,13 @@ router.put('/api/is_verify', async (req, res) => {
     },
     body: JSON.stringify({ email: email })
   });
-  
+
   const dataResponse = await response.json();
   userData = dataResponse as Usermodel;
 
   if (!userData) {
     res.status(404).json({ message: 'User not found' });
-    return 
+    return
   }
 
 
@@ -236,11 +238,31 @@ router.put('/api/is_verify', async (req, res) => {
     email,
   ]);
 
-  conn.query(sql, (err, result) => {
+  conn.query(sql, async (err, result) => {
     if (err) {
-      console.error(err);
+      console.error('MySQL error:', err);
+  
+      if (!result[0] || !result[0].name) {
+        console.error('Invalid document ID');
+        return res.status(500).json({ message: 'Invalid document ID' });
+      }
+  
       return res.status(500).json({ message: 'Database update failed' });
     }
-    res.status(200).json({ message: 'Database update successfuly' });
+    try {
+      const docRef = doc(db, 'usersLogin', data.name);
+      await setDoc(
+        docRef,
+        {
+          verify: data.is_verify, // เพิ่มฟิลด์ verify
+        },
+        { merge: true } // ไม่เขียนทับข้อมูลเดิม
+      );
+      console.log('Firestore update successful');
+    } catch (firestoreError) {
+      console.error('Firestore update failed:', firestoreError);
+      return res.status(500).json({ message: 'Firestore update failed' });
+    }
+    res.status(200).json({ message: 'Database update successful' });
   });
 });

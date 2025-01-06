@@ -83,12 +83,12 @@ router.post('/api/create_acc', async (req, res) => {
             createdAt,
         ]);
 
-        // Execute the query
         conn.query(sql, (err, result) => {
             if (err) {
                 console.error('Error inserting data:', err);
                 return res.status(500).json({ message: 'Unable to save data.' });
             }
+            
             return res.status(201).json({
                 message: 'User account created successfully.',
                 user_id: result.insertId,
