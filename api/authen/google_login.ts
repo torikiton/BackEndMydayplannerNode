@@ -80,15 +80,15 @@ router.post('/api/login_google', async (req, res) => {
       // console.log(createData.user_id);
       
       //ดึงข้อมูลของcreateDataไปgetเอาuserแล้วมาใส่ข้างล่าง
-      const docRef = doc(db, 'usersLogin', dataToken.name);
-      await setDoc(docRef, {
-        name: dataToken.name,
-        email: dataToken.email,
-        active: 1,//แก้
-        verify: 0,//แก้
-        login: 1,
-        role: 'user',//แก้
-      }, { merge: true });
+      // const docRef = doc(db, 'usersLogin', dataToken.name);
+      // await setDoc(docRef, {
+      //   name: dataToken.name,
+      //   email: dataToken.email,
+      //   active: 1,//แก้
+      //   verify: 0,//แก้
+      //   login: 1,
+      //   role: 'user',//แก้
+      // }, { merge: true });
 
       res.status(200).json({
         success: true,
