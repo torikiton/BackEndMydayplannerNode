@@ -251,15 +251,38 @@ router.put('/api/is_verify', async (req, res) => {
     }
     try {
       const docRef = doc(db, 'usersLogin', data.name);
-      await setDoc(
-        docRef,
-        {
-          verify: data.is_verify, // เพิ่มฟิลด์ verify
-        },
-        { merge: true } // ไม่เขียนทับข้อมูลเดิม
-      );
+    
+      // ดึงข้อมูลจาก Firestore
+      const docSnapshot = await getDoc(docRef);
+    
+      // ตรวจสอบว่ามีข้อมูลใน document หรือไม่
+      if (docSnapshot.exists()) {
+        const userData = docSnapshot.data();
+    
+        // ตรวจสอบเงื่อนไขของฟิลด์ login
+        if (userData.login === 0) {
+          await updateDoc(
+            docRef,
+            {
+              login: 1,
+              verify: data.is_verify, // เพิ่มฟิลด์ verify
+            }
+          );
+        } else {
+          // ถ้า login ไม่ใช่ 0, ทำสิ่งที่ต้องการ
+          await updateDoc(
+            docRef,
+            {
+              verify: data.is_verify, // เพิ่มฟิลด์ verify
+            }
+          );
+          return res.status(400).json({ message: 'User is already logged in' });
+        }
+      } else {
+        return res.status(404).json({ message: 'User not found' });
+      }
     } catch (firestoreError) {
-      return res.status(500).json({ message: 'Firestore update failed' });
+      return res.status(500).json({ message: 'Firestore update failed'});
     }
     res.status(200).json({ message: 'Database update successful' });
   });
