@@ -28,33 +28,38 @@ router.post('/verify-token', async (req, res) => {
 });
 
 router.post('/api/login_google', async (req, res) => {
-  const { email, profile, name } = req.body;
+  const { tokenID } = req.body;
 
   try {
-    const responseToken = await fetch('https://node-myday-planner.onrender.com/user/api/get_user', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ email: email })
-    });
-    const dataToken = await responseToken.json();
+    const responseToken = await fetch(`https://oauth2.googleapis.com/tokeninfo?id_token=${tokenID}`);
 
+    if (!responseToken.ok) {
+      throw new Error('Invalid token');
+    }
+    const dataToken = await responseToken.json();
+    // console.log(dataToken);
+    
+
+    if (!responseToken.ok) {
+      res.status(401).json({ success: false, message: 'Invalid token' });
+      return
+    }
 
     const response = await fetch('https://node-myday-planner.onrender.com/user/api/get_user', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ email: email })
+      body: JSON.stringify({ email: dataToken.email })
     });
     const data = await response.json();
 
     if (response.status === 404) {
       const bodygoogle = {
-        name: name,
-        email: email,
-        profile: profile,
+        name: dataToken.name,
+        email: dataToken.email,
+        hashed_password: '-',
+        profile: dataToken.picture,
       };
 
       const createAccountResponse = await fetch('https://node-myday-planner.onrender.com/user/api/create_acc', {
