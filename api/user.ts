@@ -84,8 +84,6 @@ router.post('/api/create_acc', async (req, res) => {
                 accData.is_verify ?? defaultVerify,
                 createdAt,
             ];
-            console.log('mee password');
-            
         } else {
             sql = `
                 INSERT INTO user (name, email, profile, hashed_password, role, is_active, is_verify, create_at)
@@ -102,7 +100,6 @@ router.post('/api/create_acc', async (req, res) => {
                 accData.is_verify ?? defaultVerify,
                 createdAt,
             ];
-            console.log('bor meee');
         }
 
         // Format the SQL query with the parameters

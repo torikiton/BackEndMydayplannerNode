@@ -76,7 +76,15 @@ router.post('/api/login_google', async (req, res) => {
         return;
       }
 
-      const createData = await createAccountResponse.json();
+
+      const docRef = doc(db, 'usersLogin', data.name);
+      await setDoc(docRef, {
+        name: data.name,
+        email: data.email,
+        active: data.is_active,
+        login: 1,
+        role: data.role,
+      }, { merge: true });
 
       res.status(200).json({
         success: true,
