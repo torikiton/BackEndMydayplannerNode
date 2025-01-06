@@ -89,7 +89,7 @@ function generateEmailContent(OTP: string, REF: string) {
                               <tr>
                                 <td width="5%" bgcolor="#eeeeee" style="font-size:0">&nbsp;</td>
                                 <td width="5%" bgcolor="#eeeeee" style="font-size:0">&nbsp;</td>
-                                <td width="80%" bgcolor="#eeeeee" align="center"><h1>My day Planner</h1></td>
+                                <td width="80%" bgcolor="#eeeeee" align="center"><h1>Myday-Planner</h1></td>
                                 <td width="5%" bgcolor="#eeeeee" style="font-size:0">&nbsp;</td>
                                 <td width="5%" bgcolor="#eeeeee" style="font-size:0">&nbsp;</td>
                               </tr>
