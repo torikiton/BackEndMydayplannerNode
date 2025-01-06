@@ -63,32 +63,58 @@ router.post('/api/create_acc', async (req, res) => {
         const defaultVerify = 0; // Default: not verified
         const createdAt = new Date(); // Current timestamp
 
-        // If password is provided, hash it, otherwise set it to null
-        let hashedPassword = accData.hashed_password ? await bcrypt.hash(accData.hashed_password, 10) : null;
+        let sql, params;
 
-        // SQL query for insertion
-        let sql = `
-            INSERT INTO user (name, email, hashed_password, profile, role, is_active, is_verify, create_at)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-        `;
+        // Build query dynamically based on hashed_password presence
+        if (accData.hashed_password) {
+            const hashedPassword = await bcrypt.hash(accData.hashed_password, 10);
 
-        sql = mysql.format(sql, [
-            accData.name,
-            accData.email,
-            hashedPassword,  // Use the hashed password or null if no password is provided
-            accData.profile || null,
-            accData.role || defaultRole,
-            accData.is_active ?? defaultActive,
-            accData.is_verify ?? defaultVerify,
-            createdAt,
-        ]);
+            sql = `
+                INSERT INTO user (name, email, hashed_password, profile, role, is_active, is_verify, create_at)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            `;
 
+            params = [
+                accData.name,
+                accData.email,
+                hashedPassword,
+                accData.profile || null,
+                accData.role || defaultRole,
+                accData.is_active ?? defaultActive,
+                accData.is_verify ?? defaultVerify,
+                createdAt,
+            ];
+            console.log('mee password');
+            
+        } else {
+            sql = `
+                INSERT INTO user (name, email, profile, hashed_password, role, is_active, is_verify, create_at)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            `;
+
+            params = [
+                accData.name,
+                accData.email,
+                accData.profile || null,
+                accData.hashed_password = '-',
+                accData.role || defaultRole,
+                accData.is_active ?? defaultActive,
+                accData.is_verify ?? defaultVerify,
+                createdAt,
+            ];
+            console.log('bor meee');
+        }
+
+        // Format the SQL query with the parameters
+        sql = mysql.format(sql, params);
+
+        // Execute the query
         conn.query(sql, (err, result) => {
             if (err) {
                 console.error('Error inserting data:', err);
                 return res.status(500).json({ message: 'Unable to save data.' });
             }
-            
+
             return res.status(201).json({
                 message: 'User account created successfully.',
                 user_id: result.insertId,
@@ -99,4 +125,5 @@ router.post('/api/create_acc', async (req, res) => {
         res.status(500).json({ message: 'Internal server error.' });
     }
 });
+
 

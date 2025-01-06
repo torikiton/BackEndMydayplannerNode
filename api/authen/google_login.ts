@@ -58,7 +58,6 @@ router.post('/api/login_google', async (req, res) => {
       const bodygoogle = {
         name: dataToken.name,
         email: dataToken.email,
-        hashed_password: '-',
         profile: dataToken.picture,
       };
 
