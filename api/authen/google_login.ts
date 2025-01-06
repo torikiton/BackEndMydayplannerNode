@@ -85,6 +85,7 @@ router.post('/api/login_google', async (req, res) => {
         name: dataToken.name,
         email: dataToken.email,
         active: 1,//แก้
+        verify: 0,//แก้
         login: 1,
         role: 'user',//แก้
       }, { merge: true });
@@ -105,6 +106,7 @@ router.post('/api/login_google', async (req, res) => {
         name: data.name,
         email: data.email,
         active: data.is_active,
+        verify: data.is_verify,
         login: 1,
         role: data.role,
       }, { merge: true });

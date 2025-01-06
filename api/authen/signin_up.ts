@@ -80,6 +80,7 @@ router.post('/api/login', (req, res) => {
                 name: user.name,
                 email: user.email,
                 active: user.is_active,
+                verify: user.is_verify,
                 login: 1,
                 role: user.role,
             }, { merge: true });  // `{ merge: true }` ช่วยให้ข้อมูลเดิมไม่ถูกลบ
