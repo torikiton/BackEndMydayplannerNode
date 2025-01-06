@@ -258,9 +258,9 @@ router.put('/api/is_verify', async (req, res) => {
         },
         { merge: true } // ไม่เขียนทับข้อมูลเดิม
       );
-      console.log('Firestore update successful');
+      // console.log('Firestore update successful');
     } catch (firestoreError) {
-      console.error('Firestore update failed:', firestoreError);
+      // console.error('Firestore update failed:', firestoreError);
       return res.status(500).json({ message: 'Firestore update failed' });
     }
     res.status(200).json({ message: 'Database update successful' });
