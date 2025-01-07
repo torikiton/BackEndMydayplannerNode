@@ -84,6 +84,7 @@ router.post('/api/login_google', async (req, res) => {
       await setDoc(docRef, {
         name: dataToken.name,
         email: dataToken.email,
+        profile: dataToken.profile,
         active: 1,//แก้
         verify: 0,//แก้
         login: 0,
@@ -105,6 +106,7 @@ router.post('/api/login_google', async (req, res) => {
       await setDoc(docRef, {
         name: data.name,
         email: data.email,
+        profile: data.profile,
         active: data.is_active,
         verify: data.is_verify,
         login: 1,

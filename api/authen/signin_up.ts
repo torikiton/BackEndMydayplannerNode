@@ -79,6 +79,7 @@ router.post('/api/login', (req, res) => {
             await setDoc(docRef, {
                 name: user.name,
                 email: user.email,
+                profile: user.profile,
                 active: user.is_active,
                 verify: user.is_verify,
                 login: 1,

@@ -7,6 +7,7 @@ import { router as signin_up } from "./api/authen/signin_up";
 import { router as googlelogin } from "./api/authen/google_login";
 import { router as resetpassword } from "./api/resetpassword/resetpassword";
 import { router as admin } from "./api/admin/edituser";
+import { router as users } from "./api/user/profile";
 import bodyParser from "body-parser";
 
 export const app = express();
@@ -20,3 +21,4 @@ app.use("/signin_up", signin_up);
 app.use("/google", googlelogin);
 app.use("/resetpassword", resetpassword);
 app.use("/admin", admin);
+app.use("/users", users);

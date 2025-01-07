@@ -14,6 +14,11 @@ export interface Usermodel {
     is_active:       number;
     is_verify:       number;
     create_at:       Date;
+    profileData?: {
+        name?: string;
+        hashed_password?: string;
+        profile?: string;
+    };
 }
 
 // Converts JSON strings to/from your types
