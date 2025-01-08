@@ -124,3 +124,38 @@ router.post('/api/create_acc', async (req, res) => {
 });
 
 
+router.get('/api/get_all_user', (req, res) => {
+    // Query the database to get user details
+    conn.query('SELECT * FROM user', (err, results) => {
+        if (err) {
+            console.error("Database query error:", err);
+            return res.status(500).json({ success: false, message: 'Database query failed.' });
+        }
+
+        // Check if there are any results
+        if (!results || results.length === 0) {
+            return res.status(404).json({ success: false, message: 'No users found.' });
+        }
+
+        try {
+            // Map results to an array of Usermodel
+            const users: Usermodel[] = results.map((userObject: any) => ({
+                user_id: userObject.user_id,
+                name: userObject.name,
+                email: userObject.email,
+                hashed_password: userObject.hashed_password,
+                profile: userObject.profile,
+                role: userObject.role,
+                is_active: userObject.is_active,
+                is_verify: userObject.is_verify,
+                create_at: new Date(userObject.create_at),
+            }));
+
+            // Return all users as JSON
+            return res.status(200).json({ success: true, users });
+        } catch (error) {
+            console.error("Error processing user data:", error);
+            return res.status(500).json({ success: false, message: 'Error processing user data.' });
+        }
+    });
+});

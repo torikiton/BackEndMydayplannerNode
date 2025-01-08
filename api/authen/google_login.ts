@@ -60,7 +60,8 @@ router.post('/api/login_google', async (req, res) => {
         email: dataToken.email,
         profile: dataToken.picture,
       };
-
+      console.log(bodygoogle);
+      
       const createAccountResponse = await fetch('https://node-myday-planner.onrender.com/user/api/create_acc', {
         method: 'POST',
         headers: {
