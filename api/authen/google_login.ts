@@ -84,7 +84,7 @@ router.post('/api/login_google', async (req, res) => {
       await setDoc(docRef, {
         name: dataToken.name,
         email: dataToken.email,
-        profile: dataToken.profile,
+        profile: dataToken.profile || 'default-user-profile',
         active: 1,//แก้
         verify: 0,//แก้
         login: 0,
