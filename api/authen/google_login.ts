@@ -3,7 +3,7 @@ import admin from "firebase-admin";
 import dotenv from 'dotenv';
 import axios from 'axios';
 import { db } from './../../firebase';
-import { addDoc, collection, deleteDoc, doc, getDoc, getDocs, setDoc, } from 'firebase/firestore';
+import { doc, setDoc, } from 'firebase/firestore';
 
 export const router = express.Router();
 
