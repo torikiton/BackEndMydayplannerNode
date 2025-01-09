@@ -11,7 +11,7 @@ export interface Usermodel {
     hashed_password: string;
     profile:         string;
     role:            string;
-    is_active:       number;
+    is_active:       string;
     is_verify:       number;
     create_at:       Date;
     profileData?: {

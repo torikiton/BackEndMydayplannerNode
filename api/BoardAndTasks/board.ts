@@ -1,7 +1,7 @@
 import express from "express";
-import { conn,queryAsync } from "../dbconnect";
+import { conn,queryAsync } from "../../dbconnect";
 import mysql from "mysql";
-import {Boardmodel} from "../model/boardmodel";
+import {Boardmodel} from "../../model/boardmodel";
 
 export const router = express.Router();
 

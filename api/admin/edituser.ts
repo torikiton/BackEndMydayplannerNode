@@ -39,7 +39,7 @@ router.put('/api/edit_active', async (req, res) => {
         }
 
         // Update user data locally
-        const updatedData: Usermodel = { ...userData, is_active: 0 };
+        const updatedData: Usermodel = { ...userData, is_active: "0" };
         const createAt = new Date(updatedData.create_at).toISOString().slice(0, 19).replace('T', ' ');
 
         let sql = `
