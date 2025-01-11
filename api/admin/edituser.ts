@@ -10,14 +10,12 @@ export const router = express.Router();
 
 router.put('/api/edit_active', async (req, res) => {
     const { email }: Usermodel = req.body;
-
     if (!email) {
         res.status(400).json({ message: 'Email is required.' });
         return
     }
 
     try {
-        // Fetch user data from the external API
         const response = await fetch('https://node-myday-planner.onrender.com/user/api/get_user', {
             method: 'POST',
             headers: {
@@ -32,7 +30,6 @@ router.put('/api/edit_active', async (req, res) => {
         }
 
         const userData: Usermodel | undefined = await response.json();
-
         if (!userData) {
             res.status(404).json({ message: 'User not found.' });
             return
@@ -69,7 +66,7 @@ router.put('/api/edit_active', async (req, res) => {
 
             try {
                 // Update user status in Firestore
-                const docRef = doc(db, 'usersLogin', updatedData.name);
+                const docRef = doc(db, 'usersLogin', updatedData.email);
                 const docSnapshot = await getDoc(docRef);
 
                 if (docSnapshot.exists()) {
@@ -94,32 +91,22 @@ router.post('/api/create_acc', async (req, res) => {
     const accData: Usermodel = req.body;
 
     try {
-        // Default values
-        const defaultName = "admin";
-        const defaultProfile = "url";
-        const defaultRole = "admin";
-        const defaultActive = 1;
-        const defaultVerify = 0;
         const createdAt = new Date();
 
         let sql, params;
-
-
         const hashedPassword = await bcrypt.hash(accData.hashed_password, 10);
-
         sql = `
                 INSERT INTO user (name, email, hashed_password, profile, role, is_active, is_verify, create_at)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?)
             `;
-
         params = [
-            accData.name || defaultName,
+            accData.name = "admin",
             accData.email,
             hashedPassword,
-            accData.profile || defaultProfile,
-            accData.role || defaultRole,
-            accData.is_active ?? defaultActive,
-            accData.is_verify ?? defaultVerify,
+            accData.profile || "none-url",
+            accData.role = "admin",
+            accData.is_active = "1",
+            accData.is_verify = 0,
             createdAt,
         ];
 

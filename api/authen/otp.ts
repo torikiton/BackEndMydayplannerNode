@@ -208,12 +208,10 @@ router.put('/api/is_verify', async (req, res) => {
 
   const dataResponse = await response.json();
   userData = dataResponse as Usermodel;
-
   if (!userData) {
     res.status(404).json({ message: 'User not found' });
     return
   }
-
 
   const data: Usermodel = { ...userData, is_verify: 1 };
   const createAt = new Date(data.create_at).toISOString().slice(0, 19).replace('T', ' ');
@@ -241,24 +239,15 @@ router.put('/api/is_verify', async (req, res) => {
   conn.query(sql, async (err, result) => {
     if (err) {
       console.error('MySQL error:', err);
-  
-      if (!result[0] || !result[0].name) {
-        console.error('Invalid document ID');
-        return res.status(500).json({ message: 'Invalid document ID' });
-      }
-  
       return res.status(500).json({ message: 'Database update failed' });
     }
     try {
-      const docRef = doc(db, 'usersLogin', data.name);
-    
-      // ดึงข้อมูลจาก Firestore
+      const docRef = doc(db, 'usersLogin', data.email);
       const docSnapshot = await getDoc(docRef);
     
       // ตรวจสอบว่ามีข้อมูลใน document หรือไม่
       if (docSnapshot.exists()) {
         const userData = docSnapshot.data();
-    
         // ตรวจสอบเงื่อนไขของฟิลด์ login
         if (userData.login === 0) {
           await updateDoc(
