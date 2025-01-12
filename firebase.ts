@@ -7,13 +7,13 @@ import path from "path";
 dotenv.config(); // Load environment variables from .env file
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBYSAhstX5INt2xkwOlGmg3wAruQBEZ3AI",
-  authDomain: "mydayplanner-e2f6b.firebaseapp.com",
-  projectId: "mydayplanner-e2f6b",
-  storageBucket: "mydayplanner-e2f6b.firebasestorage.app",
-  messagingSenderId: "504906871040",
-  appId: "1:504906871040:web:f4b5523b133d873e4f43e5",
-  measurementId: "G-3PX2KQGC03"
+  apiKey: "AIzaSyAQH-wAC_ivKww761TGEyWcHT5Omp8CB9w",
+  authDomain: "mydayplanner-a6270.firebaseapp.com",
+  projectId: "mydayplanner-a6270",
+  storageBucket: "mydayplanner-a6270.firebasestorage.app",
+  messagingSenderId: "773568755866",
+  appId: "1:773568755866:web:e5c70331f78a71c1828723",
+  measurementId: "G-CNX3BQTE17"
 };
 
 export const app = initializeApp(firebaseConfig);
