@@ -27,6 +27,10 @@ router.post('/api/share_link', async (req, res) => {
                 }
 
                 const boardObject = result[0] as Boardmodel;
+                
+                if (boardObject.is_group != 1) {
+                    return res.status(403).json({ success: false, message: 'Board is  not authorized to share this board.' });
+                }
 
                 // 2. สร้าง Token และบันทึกลงในฐานข้อมูล
                 const token = uuidv4();
@@ -83,7 +87,7 @@ router.post('/share/:token', async (req, res) => {
 
                 // 2. ตรวจสอบว่าผู้ใช้เป็นสมาชิกบอร์ดอยู่แล้วหรือไม่
                 conn.query(
-                    'SELECT * FROM `board_users` WHERE board_id = ? AND user_id = ?',
+                    'SELECT * FROM `board_user` WHERE board_id = ? AND user_id = ?',
                     [boardToken.board_id, userId],
                     (err, result) => {
                         if (err) {
@@ -100,7 +104,7 @@ router.post('/share/:token', async (req, res) => {
 
                         // 3. เพิ่มผู้ใช้ในบอร์ด
                         conn.query(
-                            'INSERT INTO `board_users` (board_id, user_id, added_at) VALUES (?, ?, NOW())',
+                            'INSERT INTO `board_user` (board_id, user_id, added_at) VALUES (?, ?, NOW())',
                             [boardToken.board_id, userId],
                             (err) => {
                                 if (err) {
