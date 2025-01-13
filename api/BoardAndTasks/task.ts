@@ -84,6 +84,13 @@ router.get("/tasks", (req, res) => {
         res.status(200).json(result);
     });
 });
+router.get("/tasks/:id", (req, res) => {
+    let id = +req.params.id;
+    conn.query("select * from tasks where task_id = ?", [id], (err, result, fields) => {
+      if (err) throw err;
+      res.status(200).json(result);
+    });
+  });
 
 router.get("/checklist", (req, res) => {
     conn.query("select * from checklist", (err, result, fields) => {
@@ -91,4 +98,12 @@ router.get("/checklist", (req, res) => {
         res.status(200).json(result);
     });
 });
+
+router.get("/checklist/:id", (req, res) => {
+    let id = +req.params.id;
+    conn.query("select * from checklist where checklist_id = ?", [id], (err, result, fields) => {
+      if (err) throw err;
+      res.status(200).json(result);
+    });
+  });
 
