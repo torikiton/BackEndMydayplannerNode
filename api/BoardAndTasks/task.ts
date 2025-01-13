@@ -50,37 +50,32 @@ router.post("/createTasks", (req, res) => {
 
 router.post("/createTasks/checklist", (req, res) => {
     const checklist:Checklistmodel = req.body; // รับข้อมูลจาก request body
-    const userSql = `
-        INSERT INTO tasks (
+    const sql = `
+        INSERT INTO checklist (
             task_id, 
             checklist_name, 
             is_archive, 
             assigned_to, 
-            create_at
+            created_at
         )
-        VALUES (?, ?, ?, ? NOW())
+        VALUES (?, ?, ?, ?, NOW())
     `;
 
-    // const sqlParams = [
-    //     tasks.board_id,
-    //     tasks.task_name,
-    //     tasks.description || null,
-    //     tasks.status || "today",
-    //     tasks.priority,
-    //     tasks.due_date || null,
-    //     tasks.is_archive || 0,
-    //     tasks.create_by,
-    //     tasks.assigned_to || null
-    // ];
+    const sqlParams = [
+        checklist.task_id,
+        checklist.checklist_name,
+        checklist.is_archive || 0,
+        checklist.assigned_to || null
+    ];
 
-    // conn.query(userSql, sqlParams, (err, results) => {
-    //     if (err) {
-    //         console.error("Error inserting task:", err);
-    //         res.status(500).send("An error occurred while inserting the task.");
-    //         return;
-    //     }
-    //     res.status(200).send("Task inserted successfully.");
-    // });
+    conn.query(sql, sqlParams, (err, results) => {
+        if (err) {
+            console.error("Error inserting checklist:", err);
+            res.status(500).send("An error occurred while inserting the checklist.");
+            return;
+        }
+        res.status(200).send("checklist inserted successfully.");
+    });
 });
 
 router.get("/tasks", (req, res) => {
