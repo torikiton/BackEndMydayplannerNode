@@ -65,20 +65,21 @@ router.put('/api/edit_active', async (req, res) => {
             }
 
             try {
-                // Update user status in Firestore
+                // Reference to Firestore document
                 const docRef = doc(db, 'usersLogin', updatedData.email);
                 const docSnapshot = await getDoc(docRef);
-
+            
                 if (docSnapshot.exists()) {
+                    // Update the document if it exists
                     await updateDoc(docRef, { active: updatedData.is_active });
-                    res.status(200).json({ message: 'User account has been disabled successfully.' });
-                    return
+                    res.status(200).json({ message: 'User account has been disable successfully.' });
                 } else {
-                    res.status(404).json({ message: 'User document not found in Firestore.' });
-                    return
+                    res.status(200).json({ message: 'User not login and User account has been disable successfully.' });
+                    return;
                 }
             } catch (firestoreError) {
-                return res.status(500).json({ message: 'Failed to update user status in Firestore.' });
+                console.error("Firestore error:", firestoreError);
+                res.status(500).json({ message: 'Failed to update or create user document in Firestore.' });
             }
         });
     } catch (error) {
