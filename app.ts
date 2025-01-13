@@ -10,6 +10,7 @@ import { router as admin } from "./api/admin/edituser";
 import { router as profile } from "./api/user/profile";
 import { router as attachments } from "./api/attachments/attachments";
 import { router as share } from "./api/BoardAndTasks/share";
+import { router as tasks } from "./api/BoardAndTasks/task";
 import bodyParser from "body-parser";
 
 export const app = express();
@@ -19,6 +20,7 @@ app.use("/", index);
 app.use("/user", user);
 app.use("/board", board);
 app.use("/board/share", share);
+app.use("/board", tasks);
 app.use("/otp", otp);
 app.use("/signin_up", signin_up);
 app.use("/google", googlelogin);

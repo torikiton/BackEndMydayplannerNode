@@ -25,7 +25,7 @@ router.post("/createBoard", (req, res) => {
         return;
       }
 
-      const board_id = result.insertId;
+      const board_id = result.insertId; 
       
       let userSql = `
               INSERT INTO board_user (board_id, user_id, added_at)

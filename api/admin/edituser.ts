@@ -34,8 +34,8 @@ router.put('/api/edit_active', async (req, res) => {
             res.status(404).json({ message: 'User not found.' });
             return
         }
-
-        // Update user data locally
+        if (userData.is_active == "1") {
+            // Update user data locally
         const updatedData: Usermodel = { ...userData, is_active: "0" };
         const createAt = new Date(updatedData.create_at).toISOString().slice(0, 19).replace('T', ' ');
 
@@ -82,6 +82,57 @@ router.put('/api/edit_active', async (req, res) => {
                 res.status(500).json({ message: 'Failed to update or create user document in Firestore.' });
             }
         });
+        }else{
+            // Update user data locally
+        const updatedData: Usermodel = { ...userData, is_active: "1" };
+        const createAt = new Date(updatedData.create_at).toISOString().slice(0, 19).replace('T', ' ');
+
+        let sql = `
+            UPDATE \`user\`
+            SET
+              \`name\` = ?, \`email\` = ?, \`hashed_password\` = ?, \`profile\` = ?, 
+              \`role\` = ?, \`is_active\` = ?, \`is_verify\` = ?, \`create_at\` = ?
+            WHERE \`email\` = ?;
+        `;
+
+        sql = mysql.format(sql, [
+            updatedData.name,
+            updatedData.email,
+            updatedData.hashed_password,
+            updatedData.profile,
+            updatedData.role,
+            updatedData.is_active,
+            updatedData.is_verify,
+            createAt,
+            email,
+        ]);
+
+        conn.query(sql, async (err, result) => {
+            if (err) {
+                return res.status(500).json({ message: 'Failed to update user in the database.' });
+            }
+
+            try {
+                // Reference to Firestore document
+                const docRef = doc(db, 'usersLogin', updatedData.email);
+                const docSnapshot = await getDoc(docRef);
+            
+                if (docSnapshot.exists()) {
+                    // Update the document if it exists
+                    await updateDoc(docRef, { active: updatedData.is_active });
+                    res.status(200).json({ message: 'User account has been disable successfully.' });
+                } else {
+                    res.status(200).json({ message: 'User not login and User account has been disable successfully.' });
+                    return;
+                }
+            } catch (firestoreError) {
+                console.error("Firestore error:", firestoreError);
+                res.status(500).json({ message: 'Failed to update or create user document in Firestore.' });
+            }
+        });
+        }
+
+        
     } catch (error) {
         res.status(500).json({ message: 'An unexpected error' });
         return
