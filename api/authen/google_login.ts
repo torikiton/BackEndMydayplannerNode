@@ -80,7 +80,7 @@ router.post('/api/login_google', async (req, res) => {
         docRef,
         {
           email,
-          active: 1,
+          active: "1",
           verify: 0,
           login: 0,
           role: 'user',

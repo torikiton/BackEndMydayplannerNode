@@ -28,9 +28,7 @@ router.post('/api/share_link', async (req, res) => {
 
                 const boardObject = result[0] as Boardmodel;
                 
-                if (boardObject.is_group != 1) {
-                    return res.status(403).json({ success: false, message: 'Board is  not authorized to share this board.' });
-                }
+                
 
                 // 2. สร้าง Token และบันทึกลงในฐานข้อมูล
                 const token = uuidv4();
