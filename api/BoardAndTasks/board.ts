@@ -7,16 +7,15 @@ import { error } from "console";
 export const router = express.Router();
 
 router.post("/createBoard", (req, res) => {
-  let board: Boardmodel = req.body;
-  if (board.is_group == 1) {
+  let { board_name, create_by, is_group } = req.body;
+  if (is_group == 1) {
     let sql = `
-          INSERT INTO board (board_name, create_by, is_group)
-          VALUES (?, ?, ?)
+          INSERT INTO board (board_name, create_by,create_at)
+          VALUES (?, ?, NOW())
       `;
     sql = mysql.format(sql, [
-      board.board_name,
-      board.create_by,
-      board.is_group,
+      board_name,
+      create_by,
     ]);
 
     conn.query(sql, function (err, result) {
@@ -25,15 +24,15 @@ router.post("/createBoard", (req, res) => {
         return;
       }
 
-      const board_id = result.insertId; 
-      
+      const board_id = result.insertId;
+
       let userSql = `
               INSERT INTO board_user (board_id, user_id, added_at)
               VALUES (?, ?, NOW())
           `;
       userSql = mysql.format(userSql, [
         board_id,
-        board.create_by,
+        create_by,
       ]);
 
       conn.query(userSql, function (err, userResult) {
@@ -44,15 +43,14 @@ router.post("/createBoard", (req, res) => {
         res.status(201).send({ message: "Board and Board_User records inserted successfully!" });
       });
     });
-  } else if (board.is_group == 0) {
+  } else if (is_group == 0) {
     let sql = `
-                INSERT INTO board (board_name, create_by, is_group)
-                VALUES (?, ?, ?)
+                INSERT INTO board (board_name, create_by, create_at)
+                VALUES (?, ?, NOW())
           `;
     sql = mysql.format(sql, [
-      board.board_name,
-      board.create_by,
-      board.is_group,
+      board_name,
+      create_by,
     ]);
     conn.query(sql, (err) => {
       if (err) {
@@ -66,10 +64,35 @@ router.post("/createBoard", (req, res) => {
 });
 
 
-router.get("/boardCreateby/:id", (req, res) => {
-  let id = +req.params.id;
-  conn.query("select * from board where create_by = ?", [id], (err, result, fields) => {
-    if (err) throw err;
-    res.status(200).json(result);
-  });
+router.post("/boardbyID", (req, res) => {
+  // let id = +req.params.id;
+  let { userID, group } = req.body;
+  if (group == 1) {
+    const sql = `
+      SELECT *
+      FROM board 
+      INNER JOIN board_user ON board.board_id = board_user.board_id
+      WHERE create_by = ?
+    `;
+
+    conn.query(sql, [userID], (err, result, fields) => {
+      if (err) throw err;
+      res.status(200).json(result);
+    });
+  } else {
+    const sql = `
+      SELECT *
+      FROM board
+      WHERE board_id NOT IN (
+          SELECT board_id
+          FROM board_user
+      )AND create_by = ?;
+    `;
+
+    conn.query(sql, [userID], (err, result, fields) => {
+      if (err) throw err;
+      res.status(200).json(result);
+    });
+  }
 });
+
