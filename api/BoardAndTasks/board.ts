@@ -65,7 +65,6 @@ router.post("/createBoard", (req, res) => {
 
 
 router.post("/boardbyID", (req, res) => {
-  // let id = +req.params.id;
   let { userID, group } = req.body;
   if (group == 1) {
     const sql = `
@@ -76,7 +75,10 @@ router.post("/boardbyID", (req, res) => {
     `;
 
     conn.query(sql, [userID], (err, result, fields) => {
-      if (err) throw err;
+      if (err) {
+        console.error(err);
+        return res.status(500).json({ error: "Database error" });
+      }
       res.status(200).json(result);
     });
   } else {
@@ -90,7 +92,10 @@ router.post("/boardbyID", (req, res) => {
     `;
 
     conn.query(sql, [userID], (err, result, fields) => {
-      if (err) throw err;
+      if (err) {
+        console.error(err);
+        return res.status(500).json({ error: "Database error" });
+      }
       res.status(200).json(result);
     });
   }

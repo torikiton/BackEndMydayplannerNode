@@ -1,10 +1,10 @@
 import express from "express";
-import { conn,queryAsync } from "../../dbconnect";
+import { conn, queryAsync } from "../../dbconnect";
 import mysql from "mysql";
 import bcrypt from 'bcrypt';
 import { Convert, Usermodel } from "../../model/usermodel";  // เพิ่มการ import class Convert
 import { db } from '../../firebase';
-import { addDoc, collection, doc, getDoc, getDocs, setDoc,   } from 'firebase/firestore'; // ฟังก์ชันที่จำเป็นจาก Firestore SDK
+import { addDoc, collection, doc, getDoc, getDocs, setDoc, } from 'firebase/firestore'; // ฟังก์ชันที่จำเป็นจาก Firestore SDK
 import { promisify } from "util";
 
 export const router = express.Router();
@@ -14,9 +14,9 @@ router.post('/api/get_user', (req, res) => {
 
     if (!email) {
         res.status(400).json({ success: false, message: 'Email is required.' });
-        return 
+        return
     }
-    
+
     conn.query('SELECT * FROM user WHERE email = ?', [email], (err, result) => {
         if (err) {
             console.error("Database query error:", err);
@@ -138,3 +138,46 @@ router.get('/api/get_all_user', (req, res) => {
         }
     });
 });
+
+router.delete("/account", (req, res) => {
+    const { email } = req.body;
+
+    const checkSql = `
+        SELECT *
+        FROM user
+        INNER JOIN board ON user.user_id = board.create_by
+        INNER JOIN board_user ON board.board_id = board_user.board_id
+        WHERE user.email = ?
+    `;
+
+    conn.query(checkSql, [email], (err, result) => {
+        if (err) {
+            console.error("Error during SELECT query:", err);
+            return res.status(500).json({ error: "Database error during SELECT query" });
+        }
+
+        if (result.length > 0) {
+            return res.status(400).json({ error: "User has related data in the database and cannot be deleted" });
+        }
+
+        const deleteSql = `
+            UPDATE user
+            SET is_active = "2"
+            WHERE email = ?;
+        `;
+
+        conn.query(deleteSql, [email], (deleteErr, deleteResult) => {
+            if (deleteErr) {
+                console.error("Error during DELETE query:", deleteErr);
+                return res.status(500).json({ error: "Database error during DELETE query" });
+            }
+
+            if (deleteResult.affectedRows === 0) {
+                return res.status(404).json({ error: "User not found" });
+            }
+
+            return res.status(200).json({ message: "User deleted successfully" });
+        });
+    });
+});
+
