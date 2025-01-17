@@ -36,7 +36,6 @@ router.put('/api/edit_profile', async (req, res) => {
             return 
         }
 
-        //กรณีมีการส่งค่าpasswordเข้ามาที่req
         if (profileData?.hashed_password) {
             const hashedPassword = await bcrypt.hash(profileData.hashed_password, 10);
             // เพิ่ม hashedPassword เข้าไปใน updatedData
@@ -70,48 +69,12 @@ router.put('/api/edit_profile', async (req, res) => {
                 res.status(500).json({ message: 'Failed to update user in the database.' });
                 return 
             }
-
-            try {
-                const oldDocRef = doc(db, 'usersLogin', userData.name);
-                const newDocRef = doc(db, 'usersLogin', updatedData.name);
-
-                if (userData.name !== updatedData.name) {
-                    const docSnapshot = await getDoc(oldDocRef);
-                    if (docSnapshot.exists()) {
-                        const oldData = docSnapshot.data();
-
-                        await setDoc(newDocRef, oldData); // สร้างเอกสารใหม่ที่มีชื่อใหม่
-
-                        await deleteDoc(oldDocRef); // ลบเอกสารเก่า
-
-                        res.status(200).json({ message: 'Document name changed successfully.' });
-                    } else {
-                        res.status(404).json({ message: 'User document not found in Firestore.' });
-                    }
-                } else {
-                    
-                    const docSnapshot = await getDoc(oldDocRef);
-
-                    if (docSnapshot.exists()) {
-                        const oldData = docSnapshot.data();
-                    
-                        // อัปเดตข้อมูลใน Firestore
-                        await updateDoc(oldDocRef, {
-                            name: updatedData.name ?? oldData.name,
-                            profileData: updatedData.profile ?? oldData.profile,
-                        });
-                    
-                        res.status(200).json({ message: 'User account has been updated successfully.' });
-                    } else {
-                        res.status(404).json({ message: 'User document not found in Firestore.' });
-                    }
-                }
-            } catch (firestoreError) {
-                return res.status(500).json({ message: 'Failed to update user status in Firestore.' });
-            }
+            return res.status(200).json({ message: 'Profile updated successfully.' });
         });
     } catch (error) {
+        console.error('Error updating profile:', error);
         res.status(500).json({ message: 'An unexpected error occurred.' });
+        return 
     }
 });
 
