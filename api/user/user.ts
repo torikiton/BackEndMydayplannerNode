@@ -147,7 +147,7 @@ router.delete("/account", (req, res) => {
         FROM user
         LEFT JOIN board ON user.user_id = board.create_by
         LEFT JOIN board_user ON user.user_id = board_user.user_id
-        WHERE user.email = "123"
+        WHERE user.email = ?
             AND (board.board_id IS NOT NULL OR board_user.board_id IS NOT NULL)
     `;
 
