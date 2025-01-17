@@ -86,3 +86,9 @@ router.post('/api/logout', async (req, res) => {
     }
 
 });
+
+router.post('/captcha', async (req, res) => {
+    const { token } = req.body;
+    
+
+});

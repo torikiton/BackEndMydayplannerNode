@@ -155,29 +155,48 @@ router.delete("/account", (req, res) => {
             console.error("Error during SELECT query:", err);
             return res.status(500).json({ error: "Database error during SELECT query" });
         }
-
-        if (result.length > 0) {
-            return res.status(400).json({ error: "User has related data in the database and cannot be deleted" });
+        if (result[0].role == "admin") {
+            return res.status(400).json({ error: "Admin is cannot delete" });
         }
 
-        const deleteSql = `
-            UPDATE user
-            SET is_active = "2"
-            WHERE email = ?;
-        `;
+        if (result.length > 0) {
+            const deleteSql = `
+                UPDATE user
+                SET is_active = "2"
+                WHERE email = ?;
+            `;
 
-        conn.query(deleteSql, [email], (deleteErr, deleteResult) => {
-            if (deleteErr) {
-                console.error("Error during DELETE query:", deleteErr);
-                return res.status(500).json({ error: "Database error during DELETE query" });
-            }
+            conn.query(deleteSql, [email], (deleteErr, deleteResult) => {
+                if (deleteErr) {
+                    console.error("Error during DELETE query:", deleteErr);
+                    return res.status(500).json({ error: "Database error during DELETE query" });
+                }
 
-            if (deleteResult.affectedRows === 0) {
-                return res.status(404).json({ error: "User not found" });
-            }
+                if (deleteResult.affectedRows === 0) {
+                    return res.status(404).json({ error: "User not found" });
+                }
 
-            return res.status(200).json({ message: "User deleted successfully" });
-        });
+                return res.status(200).json({ message: "User deleted successfully" });
+            });
+        } else {
+            const deleteSql = `
+                DELETE FROM user
+                WHERE email = ?;
+            `;
+
+            conn.query(deleteSql, [email], (deleteErr, deleteResult) => {
+                if (deleteErr) {
+                    console.error("Error during DELETE query:", deleteErr);
+                    return res.status(500).json({ error: "Database error during DELETE query" });
+                }
+
+                if (deleteResult.affectedRows === 0) {
+                    return res.status(404).json({ error: "User not found" });
+                }
+
+                return res.status(200).json({ message: "User deleted successfully" });
+            });
+        }
     });
 });
 
