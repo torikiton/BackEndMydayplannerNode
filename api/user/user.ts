@@ -155,9 +155,6 @@ router.delete("/account", (req, res) => {
             console.error("Error during SELECT query:", err);
             return res.status(500).json({ error: "Database error during SELECT query" });
         }
-        if (result[0].role == "admin") {
-            return res.status(400).json({ error: "Admin is cannot delete" });
-        }
 
         if (result.length > 0) {
             const deleteSql = `
