@@ -143,10 +143,12 @@ router.delete("/account", (req, res) => {
     const { email } = req.body;
 
     const checkSql = `
-        SELECT COUNT(*) AS board_count
+        SELECT DISTINCT *
         FROM user
-        INNER JOIN board ON user.user_id = board.create_by
-        WHERE user.email = "tiwloso11233@gmail.com";
+        LEFT JOIN board ON user.user_id = board.create_by
+        LEFT JOIN board_user ON user.user_id = board_user.user_id
+        WHERE user.email = "123"
+            AND (board.board_id IS NOT NULL OR board_user.board_id IS NOT NULL)
     `;
 
     conn.query(checkSql, [email], (err, result) => {
