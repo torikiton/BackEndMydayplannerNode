@@ -6,7 +6,7 @@ serviceAccountKey
 
 # Ignore environment variables
 .env
-
+mydayplanner-a6270.json
 # Ignore build output
 /dist
 "serviceAccountKey.json" 

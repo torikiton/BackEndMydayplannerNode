@@ -13,7 +13,7 @@ router.post('/api/login_google', async (req, res) => {
 
   try {
     // Fetch user data from the server
-    const response = await fetch('https://node-myday-planner.onrender.com/user/api/get_user', {
+    const response = await fetch('https://backendmydayplannernode.onrender.com/user/api/get_user', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -55,7 +55,7 @@ router.post('/api/login_google', async (req, res) => {
     } else if (response.status === 404) {
       const newUser = { name, email, profile };
       const createAccountResponse = await fetch(
-        'https://node-myday-planner.onrender.com/user/api/create_acc',
+        'https://backendmydayplannernode.onrender.com/user/api/create_acc',
         {
           method: 'POST',
           headers: {

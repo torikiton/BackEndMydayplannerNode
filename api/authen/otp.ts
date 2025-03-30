@@ -198,7 +198,7 @@ router.put('/api/is_verify', async (req, res) => {
   const { email } = req.body;
   let userData: Usermodel | undefined;
 
-  const response = await fetch('https://node-myday-planner.onrender.com/user/api/get_user', {
+  const response = await fetch('https://backendmydayplannernode.onrender.com/user/api/get_user', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

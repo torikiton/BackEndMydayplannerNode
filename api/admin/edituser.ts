@@ -1,7 +1,7 @@
 import express from "express";
 import { conn, queryAsync } from "../../dbconnect";
 import mysql from "mysql";
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 import { Convert, Usermodel } from "../../model/usermodel";
 import { db } from './../../firebase';
 import { addDoc, collection, deleteDoc, doc, getDoc, getDocs, setDoc, updateDoc, } from 'firebase/firestore';
@@ -16,7 +16,7 @@ router.put('/api/edit_active', async (req, res) => {
     }
 
     try {
-        const response = await fetch('https://node-myday-planner.onrender.com/user/api/get_user', {
+        const response = await fetch('https://backendmydayplannernode.onrender.com/user/api/get_user', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -184,7 +184,7 @@ router.put('/api/is_verify', async (req, res) => {
   const { email } = req.body;
   let userData: Usermodel | undefined;
 
-  const response = await fetch('https://node-myday-planner.onrender.com/user/api/get_user', {
+  const response = await fetch('https://backendmydayplannernode.onrender.com/user/api/get_user', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

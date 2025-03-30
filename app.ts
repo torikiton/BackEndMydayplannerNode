@@ -11,6 +11,7 @@ import { router as profile } from "./api/user/profile";
 import { router as attachments } from "./api/attachments/attachments";
 import { router as share } from "./api/BoardAndTasks/share";
 import { router as tasks } from "./api/BoardAndTasks/task";
+import verify_captcha from "./api/authen/verify_captcha";
 import bodyParser from "body-parser";
 
 export const app = express();
@@ -28,4 +29,5 @@ app.use("/resetpassword", resetpassword);
 app.use("/admin", admin);
 app.use("/profile", profile);
 app.use("/attachments", attachments);
+app.use("/verify", verify_captcha);
 // app.use("/share", share);

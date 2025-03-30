@@ -1,13 +1,14 @@
 import express from "express";
 import { conn, queryAsync } from "../../dbconnect";
 import mysql from "mysql";
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 import { Convert, Usermodel } from "../../model/usermodel";  // เพิ่มการ import class Convert
 import { db } from '../../firebase';
 import { addDoc, collection, doc, getDoc, getDocs, setDoc, } from 'firebase/firestore'; // ฟังก์ชันที่จำเป็นจาก Firestore SDK
 import { promisify } from "util";
 
 export const router = express.Router();
+
 
 router.post('/api/get_user', (req, res) => {
     const { email } = req.body;

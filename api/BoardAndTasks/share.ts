@@ -32,7 +32,7 @@ router.post('/api/share_link', async (req, res) => {
 
                 // 2. สร้าง Token และบันทึกลงในฐานข้อมูล
                 const token = uuidv4();
-                const shareLink = `https://node-myday-planner.onrender.com/board/share/${token}`;
+                const shareLink = `https://backendmydayplannernode.onrender.com/board/share/${token}`;
 
                 const expiresDate = expiresAt ? new Date(expiresAt) : null;
 

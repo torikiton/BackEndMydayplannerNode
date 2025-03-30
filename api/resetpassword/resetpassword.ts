@@ -6,7 +6,7 @@ import mysql from "mysql";
 import { messaging } from "firebase-admin";
 import { db } from '../../firebase';
 import { addDoc, collection, doc, getDoc, getDocs, setDoc, updateDoc, } from 'firebase/firestore';
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 
 export const router = express.Router();
 
@@ -199,7 +199,7 @@ router.put('/api/resetpassword', async (req, res) => {
   const { email, hashed_password }:Usermodel = req.body;
   let userData: Usermodel | undefined;
 
-  const response = await fetch('https://node-myday-planner.onrender.com/user/api/get_user', {
+  const response = await fetch('https://backendmydayplannernode.onrender.com/user/api/get_user', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

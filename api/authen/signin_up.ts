@@ -1,7 +1,7 @@
 import express from "express";
 import { conn, queryAsync } from "../../dbconnect";
 import mysql from "mysql";
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 import { Convert } from "../../model/usermodel";  // เพิ่มการ import class Convert
 import { db } from './../../firebase';
 import { addDoc, collection, deleteDoc, doc, getDoc, getDocs, setDoc, } from 'firebase/firestore'; // ฟังก์ชันที่จำเป็นจาก Firestore SDK

@@ -1,7 +1,7 @@
 import express from "express";
 import { conn,queryAsync } from "../../dbconnect";
 import mysql from "mysql";
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 import { Convert, Usermodel } from "../../model/usermodel";
 import { db } from '../../firebase';
 import { addDoc, collection, doc, getDoc, getDocs, setDoc,   } from 'firebase/firestore';
